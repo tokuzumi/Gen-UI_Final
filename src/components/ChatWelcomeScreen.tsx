@@ -8,7 +8,8 @@ const LOGO_URL = "https://res.cloudinary.com/dco1sm3hy/image/upload/v1762494737/
 
 export default function ChatWelcomeScreen() {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+    // Removendo p-8 para que PromptSuggestions possa usar a largura total
+    <div className="flex flex-col items-center justify-center h-full text-center">
       
       {/* Logo */}
       <Image
@@ -18,21 +19,20 @@ export default function ChatWelcomeScreen() {
         height={72} // Novo tamanho base para otimização
         // Em telas pequenas, limitamos a largura para 165px (tamanho anterior).
         // Em telas grandes (lg), permitimos que ele use o tamanho otimizado de 248px.
-        className="w-auto h-auto max-w-[165px] lg:max-w-[248px] mb-6"
+        className="w-auto h-auto max-w-[165px] lg:max-w-[248px] mb-6 mt-12" // Adicionando mt-12 para espaçamento superior
       />
 
-      {/* Título e Contexto */}
-      {/* <h1 className="text-3xl font-bold text-foreground mb-2">
-        Gen-UI - Programa de Afiliados
-      </h1> */}
-      <p className="text-sm text-muted-foreground mb-1">
-        Por CARLOS C TOLEDO
-      </p>
-      <p className="text-base text-foreground mb-12 max-w-md">
-        Chat AFinance: capacita afiliados e promove excelência no mercado financeiro.
-      </p>
+      {/* Título e Contexto - Aplicando padding horizontal aqui */}
+      <div className="px-4 w-full">
+        <p className="text-sm text-muted-foreground mb-1">
+          Por CARLOS C TOLEDO
+        </p>
+        <p className="text-base text-foreground mb-12 max-w-md mx-auto">
+          Chat AFinance: capacita afiliados e promove excelência no mercado financeiro.
+        </p>
+      </div>
 
-      {/* Sugestões de Prompt */}
+      {/* Sugestões de Prompt - Agora pode usar a largura total do contêiner pai */}
       <PromptSuggestions />
     </div>
   );
