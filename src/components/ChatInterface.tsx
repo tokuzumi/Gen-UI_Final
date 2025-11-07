@@ -41,9 +41,9 @@ export default function ChatInterface() {
       {showHeader && <ChatHeader />}
 
       {/* 2. Área de Mensagens / Tela de Boas-Vindas */}
-      <div className={`space-y-6 p-4 ${welcomeScreenClasses} ${paddingBottom}`}>
+      {/* Reduzindo o padding horizontal para px-2 em mobile, mantendo py-4 */}
+      <div className={`space-y-6 px-2 py-4 md:p-4 ${welcomeScreenClasses} ${paddingBottom}`}>
         {showWelcomeScreen ? (
-          // A tela de boas-vindas usa a largura padrão
           <ChatWelcomeScreen />
         ) : (
           // Usando a largura expandida (md:max-w-5xl) APENAS para o conteúdo das mensagens
@@ -56,11 +56,11 @@ export default function ChatInterface() {
                 }`}
               >
                 <div
-                  // Aplicando max-w-md para limitar a largura da bolha da mensagem, mas permitindo que a bolha comece na borda
+                  // Removendo ml-4 e mr-4 das bolhas de mensagem
                   className={`max-w-xs lg:max-w-md px-4 py-3 rounded-xl shadow-md ${
                     message.type === "human"
-                      ? "bg-card text-foreground border border-border rounded-tr-none mr-4" // Adicionando margem direita
-                      : "text-foreground rounded-tl-sm ml-4" // Adicionando margem esquerda
+                      ? "bg-card text-foreground border border-border rounded-tr-none" 
+                      : "text-foreground rounded-tl-sm" 
                   }`}
                 >
                   {message.type === "assistant" && (
@@ -71,9 +71,9 @@ export default function ChatInterface() {
               </div>
             ))}
             
-            {/* Indicador de digitação para o agente - Simplificado */}
+            {/* Indicador de digitação para o agente - Ajustando margem */}
             {isStreaming && (
-                <div className="flex justify-start items-center space-x-2 ml-4">
+                <div className="flex justify-start items-center space-x-2 ml-2 md:ml-0">
                     <Loader2 className="h-4 w-4 animate-spin text-primary" />
                     <p className="text-sm text-muted-foreground">O Agente está digitando...</p>
                 </div>
@@ -83,11 +83,10 @@ export default function ChatInterface() {
       </div>
 
       {/* 3. Formulário de Input (Fixo na parte inferior) */}
-      {/* O wrapper fixed garante que o formulário limitado (md:max-w-3xl) seja centralizado na viewport. */}
+      {/* O padding do formulário fixo já é p-4, o que está bom para o input */}
       <div className="fixed bottom-0 w-full flex justify-center z-20">
         <form 
           onSubmit={handleSubmit} 
-          // Usando a largura padrão (md:max-w-3xl) para o input fixo, independentemente do estado do chat
           className={`p-4 bg-card border-t border-border shadow-2xl rounded-t-xl ${WELCOME_SCREEN_WIDTH} w-full`}
         >
           <div className="flex items-center w-full">
