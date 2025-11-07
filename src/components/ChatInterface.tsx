@@ -1,11 +1,9 @@
 // src/components/ChatInterface.tsx
 "use client";
 
-// Remover imports de useStream, useState, uuid
-import { useThread } from "@/providers/ThreadProvider"; // Importar o hook
+import { useThread } from "@/providers/ThreadProvider";
 
 export default function ChatInterface() {
-  // Consumir o estado do Provedor
   const {
     thread,
     displayedMessages,
@@ -14,22 +12,21 @@ export default function ChatInterface() {
     handleSubmit,
   } = useThread();
 
-  // Variáveis para clarear o status
-  const isStreaming = thread.isLoading && displayedMessages.length > 0 && displayedMessages[displayedMessages.length - 1].type !== 'human';
-  const isConnected = thread.isConnected;
-  const isReady = !thread.isLoading && isConnected;
-  
-  let statusText = "Desconectado";
-  if (isStreaming) {
-    statusText = "Digitando...";
-  } else if (isReady) {
-    statusText = "Conectado e Pronto";
-  } else if (isConnected) {
-    statusText = "Conectado";
-  } else if (thread.isLoading) {
-    statusText = "Enviando...";
-  }
+  let statusText = "Conectando...";
 
+  if (thread.error) {
+    statusText = "Erro de Conexão";
+  } else if (thread.isLoading) {
+    // O agente está ativo (enviando ou recebendo)
+    statusText = "Digitando...";
+  } else if (thread.isConnected || displayedMessages.length > 0) {
+    // Se thread.isConnected for true OU se já houver mensagens no histórico,
+    // consideramos a conexão funcional e o agente pronto.
+    statusText = "Conectado e Pronto";
+  } else {
+    // Se não estiver carregando, não estiver conectado e não houver histórico.
+    statusText = "Desconectado";
+  }
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -69,7 +66,6 @@ export default function ChatInterface() {
             </div>
           </div>
         ))}
-        {/* O "Digitando..." agora é gerenciado pelo status no Header */}
       </div>
 
       {/* Formulário de Input */}
