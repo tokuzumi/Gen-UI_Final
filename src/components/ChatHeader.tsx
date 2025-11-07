@@ -11,9 +11,9 @@ export default function ChatHeader() {
       <Image
         src={LOGO_URL}
         alt="Gen-UI Logo"
-        width={60}
-        height={60}
-        className="rounded-full"
+        width={220}
+        height={64}
+        // Removendo rounded-full, pois o logo é retangular
       />
     </header>
   );
