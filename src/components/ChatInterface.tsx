@@ -40,7 +40,8 @@ export default function ChatInterface() {
   }, [displayedMessages]);
 
   // Calculamos o padding inferior necessário para que a última mensagem não fique escondida pelo formulário fixo.
-  const paddingBottom = showHeader ? "pb-[100px]" : "pb-4"; 
+  // Aumentando para 120px em desktop (md)
+  const paddingBottom = showHeader ? "pb-[100px] md:pb-[120px]" : "pb-4"; 
 
   // Se for a tela de boas-vindas, precisamos garantir que ela ocupe a altura restante para centralizar o conteúdo.
   const welcomeScreenClasses = showWelcomeScreen 
@@ -110,7 +111,8 @@ export default function ChatInterface() {
       <div className="fixed bottom-0 w-full flex justify-center z-20">
         <form 
           onSubmit={handleSubmit} 
-          className={`p-4 bg-card border-t border-border shadow-2xl rounded-t-xl ${WELCOME_SCREEN_WIDTH} w-full`}
+          // Aplicando efeito glass: backdrop-blur-md e bg-card/80
+          className={`p-4 bg-card/80 backdrop-blur-md border-t border-border shadow-2xl rounded-t-xl ${WELCOME_SCREEN_WIDTH} w-full`}
         >
           <div className="flex items-center w-full">
             
