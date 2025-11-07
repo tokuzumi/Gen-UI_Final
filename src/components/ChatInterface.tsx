@@ -1,10 +1,11 @@
 "use client";
 
 import { useThread } from "@/providers/ThreadProvider";
-import { Send, Loader2, StopCircle } from "lucide-react"; // Plus removido
+import { Send, Loader2, StopCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import ChatWelcomeScreen from "./ChatWelcomeScreen";
+import ChatHeader from "./ChatHeader"; // Importando o novo componente
 
 export default function ChatInterface() {
   const {
@@ -18,54 +19,60 @@ export default function ChatInterface() {
   const isSending = thread.isLoading && inputMessage.trim() !== "";
   const isStreaming = thread.isLoading && inputMessage.trim() === "";
   const showWelcomeScreen = displayedMessages.length === 0;
+  const showHeader = displayedMessages.length > 0;
 
   return (
     <div className="flex flex-col h-screen bg-background">
       
-      {/* Área de Mensagens / Tela de Boas-Vindas */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-6">
+      {/* 1. Cabeçalho (Visível após a primeira mensagem) */}
+      {showHeader && <ChatHeader />}
+
+      {/* 2. Área de Mensagens / Tela de Boas-Vindas */}
+      {/* Usamos flex-1 para que esta div ocupe o espaço restante */}
+      <div className="flex-1 overflow-y-auto space-y-6 p-4">
         {showWelcomeScreen ? (
           <ChatWelcomeScreen />
         ) : (
-          displayedMessages.map((message, index) => (
-            <div
-              key={message.id || index}
-              className={`flex ${
-                message.type === "human" ? "justify-end" : "justify-start"
-              }`}
-            >
+          // Centralizando as mensagens horizontalmente em telas grandes
+          <div className="mx-auto md:max-w-3xl space-y-6">
+            {displayedMessages.map((message, index) => (
               <div
-                className={`max-w-xs lg:max-w-md px-4 py-3 rounded-xl shadow-md ${
-                  message.type === "human"
-                    ? "bg-card text-foreground border border-border rounded-tr-none"
-                    : "text-foreground rounded-tl-sm"
+                key={message.id || index}
+                className={`flex ${
+                  message.type === "human" ? "justify-end" : "justify-start"
                 }`}
               >
-                {message.type === "assistant" && (
-                  <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
-                )}
-                <p className="text-base whitespace-pre-wrap">{message.content as string}</p>
+                <div
+                  className={`max-w-xs lg:max-w-md px-4 py-3 rounded-xl shadow-md ${
+                    message.type === "human"
+                      ? "bg-card text-foreground border border-border rounded-tr-none"
+                      : "text-foreground rounded-tl-sm"
+                  }`}
+                >
+                  {message.type === "assistant" && (
+                    <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
+                  )}
+                  <p className="text-base whitespace-pre-wrap">{message.content as string}</p>
+                </div>
               </div>
-            </div>
-          ))
-        )}
-        
-        {/* Indicador de digitação para o agente - Simplificado */}
-        {isStreaming && (
-            <div className="flex justify-start items-center space-x-2 ml-4">
-                <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                <p className="text-sm text-muted-foreground">O Agente está digitando...</p>
-            </div>
+            ))}
+            
+            {/* Indicador de digitação para o agente - Simplificado */}
+            {isStreaming && (
+                <div className="flex justify-start items-center space-x-2 ml-4">
+                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                    <p className="text-sm text-muted-foreground">O Agente está digitando...</p>
+                </div>
+            )}
+          </div>
         )}
       </div>
 
-      {/* Formulário de Input - Aplicando rounded-t-xl aqui */}
-      {/* Aplicando max-w-3xl e mx-auto ao form para limitar o fundo em telas grandes */}
+      {/* 3. Formulário de Input (Fixo na parte inferior) */}
       <form 
         onSubmit={handleSubmit} 
         className="p-4 bg-card border-t border-border shadow-2xl rounded-t-xl md:max-w-3xl md:mx-auto w-full"
       >
-        {/* Container interno não precisa mais de mx-auto e max-w-3xl, mas vamos manter w-full */}
         <div className="flex items-center w-full">
           
           {/* Input Wrapper: relative position for integrated button */}
@@ -75,7 +82,6 @@ export default function ChatInterface() {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               placeholder="Como posso te ajudar?"
-              // Removendo rounded-full, usando arredondamento padrão e pr-12
               className="w-full h-12 p-3 bg-input border-border focus-visible:ring-0 focus-visible:ring-offset-0 pr-12" 
               disabled={thread.isLoading}
             />
@@ -85,7 +91,6 @@ export default function ChatInterface() {
                 <Button
                     type="submit"
                     size="icon"
-                    // Mantendo rounded-full para o botão de ícone
                     className="absolute right-1 top-1/2 transform -translate-y-1/2 h-10 w-10 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground"
                     disabled={!inputMessage.trim()}
                 >
@@ -100,7 +105,6 @@ export default function ChatInterface() {
               type="button"
               variant="destructive"
               onClick={() => thread.stop()}
-              // Usando rounded-lg para o botão de parar
               className="px-4 h-12 ml-3 rounded-lg"
             >
               <StopCircle className="h-5 w-5 mr-2" />
