@@ -7,15 +7,14 @@ const LOGO_URL = "https://res.cloudinary.com/dco1sm3hy/image/upload/v1762494737/
 
 export default function ChatHeader() {
   return (
-    <header className="p-4 bg-card shadow-lg border-b border-border flex items-center space-x-3">
+    <header className="p-4 border-b border-border flex justify-center items-center">
       <Image
         src={LOGO_URL}
         alt="Gen-UI Logo"
-        width={32}
-        height={32}
+        width={40}
+        height={40}
         className="rounded-full"
       />
-      <h1 className="text-xl font-bold text-foreground">Gen-UI</h1>
     </header>
   );
 }
