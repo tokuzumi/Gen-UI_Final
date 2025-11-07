@@ -22,18 +22,24 @@ export default function ChatInterface() {
   const showHeader = displayedMessages.length > 0;
 
   // Calculamos o padding inferior necessário para que a última mensagem não fique escondida pelo formulário fixo.
-  const paddingBottom = showHeader ? "pb-[100px]" : "pb-4"; // 100px é aproximadamente a altura do formulário + padding
+  // A altura do formulário é aproximadamente 100px.
+  const paddingBottom = showHeader ? "pb-[100px]" : "pb-4"; 
+
+  // Se for a tela de boas-vindas, precisamos garantir que ela ocupe a altura restante para centralizar o conteúdo.
+  // Usamos min-h-[calc(100vh - altura_do_header - altura_do_input)]
+  const welcomeScreenClasses = showWelcomeScreen 
+    ? "min-h-[calc(100vh-100px)] flex flex-col justify-center" 
+    : "";
 
   return (
-    // Removendo h-screen e flex-col. Usando min-h-screen para garantir que o fundo cubra a tela.
-    <div className="bg-background min-h-screen flex flex-col">
+    // Removemos flex-col e h-screen, mantendo min-h-screen para o fundo
+    <div className="bg-background min-h-screen">
       
       {/* 1. Cabeçalho (Visível após a primeira mensagem) */}
       {showHeader && <ChatHeader />}
 
       {/* 2. Área de Mensagens / Tela de Boas-Vindas */}
-      {/* Removendo flex-1 e overflow-y-auto. Adicionando padding inferior para compensar o formulário fixo. */}
-      <div className={`space-y-6 p-4 ${paddingBottom}`}>
+      <div className={`space-y-6 p-4 ${welcomeScreenClasses} ${paddingBottom}`}>
         {showWelcomeScreen ? (
           <ChatWelcomeScreen />
         ) : (
@@ -77,6 +83,7 @@ export default function ChatInterface() {
       <div className="fixed bottom-0 w-full flex justify-center z-20">
         <form 
           onSubmit={handleSubmit} 
+          // O form já está limitado a md:max-w-3xl e w-full, o que garante que ele se alinhe com o conteúdo centralizado.
           className="p-4 bg-card border-t border-border shadow-2xl rounded-t-xl md:max-w-3xl w-full"
         >
           <div className="flex items-center w-full">
