@@ -2,6 +2,9 @@
 "use client";
 
 import { useThread } from "@/providers/ThreadProvider";
+import { Send, Loader2, StopCircle } from "lucide-react";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 export default function ChatInterface() {
   const {
@@ -12,34 +15,36 @@ export default function ChatInterface() {
     handleSubmit,
   } = useThread();
 
+  const isSending = thread.isLoading && inputMessage.trim() !== "";
+  const isStreaming = thread.isLoading && inputMessage.trim() === "";
+
   // Lógica para o Status do Cabeçalho:
-  // O status deve ser estático e refletir apenas a capacidade de comunicação com o backend.
   let connectionStatusText = "Conectando...";
 
   if (thread.error) {
     connectionStatusText = "Erro de Conexão";
+  } else if (isStreaming) {
+    connectionStatusText = "Digitando...";
   } else if (thread.isConnected || displayedMessages.length > 0) {
-    // Se a conexão estiver ativa OU se já houver histórico (comunicação bem-sucedida),
-    // o status é fixo como "Conectado".
     connectionStatusText = "Conectado";
   } else {
     connectionStatusText = "Desconectado";
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      <header className="p-4 bg-white shadow-md">
-        <h1 className="text-xl font-bold text-gray-800">Gen-UI (Gen-UI.com.br)</h1>
-        <p className="text-sm text-gray-500">
+    <div className="flex flex-col h-screen bg-background">
+      <header className="p-4 bg-card shadow-lg border-b border-border">
+        <h1 className="text-2xl font-bold text-foreground">Valdomiro AI</h1>
+        <p className="text-sm text-muted-foreground">
           Status:{" "}
           {connectionStatusText}
         </p>
       </header>
 
       {/* Área de Mensagens */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-4">
+      <div className="flex-1 p-4 overflow-y-auto space-y-6">
         {displayedMessages.length === 0 && (
-          <div className="text-center text-gray-500 mt-10">
+          <div className="text-center text-muted-foreground mt-10">
             Diga olá para o seu agente LangGraph!
           </div>
         )}
@@ -51,49 +56,65 @@ export default function ChatInterface() {
             }`}
           >
             <div
-              className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow ${
+              className={`max-w-xs lg:max-w-md px-4 py-3 rounded-xl shadow-md ${
                 message.type === "human"
-                  ? "bg-blue-500 text-white"
-                  : "bg-white text-gray-800 border border-gray-200"
+                  ? "bg-card text-foreground border border-border rounded-tr-none" // Mensagem do Usuário: Fundo card, sem acento, borda superior direita não arredondada
+                  : "text-foreground rounded-tl-sm" // Mensagem do Agente: Fundo transparente, sem borda
               }`}
             >
-              <p className="font-semibold capitalize mb-1">
-                {message.type === "human" ? "Você" : "Agente"}
-              </p>
-              <p>{message.content as string}</p>
+              {/* O cabeçalho 'Você' foi removido. Mantemos 'Agente' apenas para mensagens do assistente. */}
+              {message.type === "assistant" && (
+                <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
+              )}
+              <p className="text-base whitespace-pre-wrap">{message.content as string}</p>
             </div>
           </div>
         ))}
+        
+        {/* Indicador de digitação para o agente */}
+        {isStreaming && (
+            <div className="flex justify-start">
+                <div className="max-w-xs lg:max-w-md px-4 py-3 rounded-xl text-foreground rounded-tl-sm">
+                    <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
+                    <div className="flex items-center space-x-2">
+                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                        <p className="text-base text-muted-foreground">Digitando...</p>
+                    </div>
+                </div>
+            </div>
+        )}
       </div>
 
       {/* Formulário de Input */}
-      <form onSubmit={handleSubmit} className="p-4 bg-white border-t shadow-lg">
-        <div className="flex space-x-3">
-          <input
+      <form onSubmit={handleSubmit} className="p-4 bg-card border-t border-border shadow-2xl">
+        <div className="flex space-x-3 items-center">
+          <Input
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder="Digite sua mensagem..."
-            className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+            className="flex-1 p-3 bg-input border-border focus-visible:ring-primary"
             disabled={thread.isLoading}
           />
 
           {thread.isLoading ? (
-            <button
+            <Button
               type="button"
+              variant="destructive"
               onClick={() => thread.stop()}
-              className="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-150"
+              className="px-4 h-12"
             >
+              <StopCircle className="h-5 w-5 mr-2" />
               Parar
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
               type="submit"
-              className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150"
+              className="px-4 h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
               disabled={!inputMessage.trim()}
             >
-              Enviar
-            </button>
+              <Send className="h-5 w-5" />
+            </Button>
           )}
         </div>
       </form>
