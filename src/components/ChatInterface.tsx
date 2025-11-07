@@ -18,28 +18,12 @@ export default function ChatInterface() {
   const isSending = thread.isLoading && inputMessage.trim() !== "";
   const isStreaming = thread.isLoading && inputMessage.trim() === "";
 
-  // Lógica para o Status do Cabeçalho:
-  let connectionStatusText = "Conectando...";
-
-  if (thread.error) {
-    connectionStatusText = "Erro de Conexão";
-  } else if (isStreaming) {
-    connectionStatusText = "Digitando...";
-  } else if (thread.isConnected || displayedMessages.length > 0) {
-    connectionStatusText = "Conectado";
-  } else {
-    connectionStatusText = "Desconectado";
-  }
+  // A lógica de status do cabeçalho não é mais necessária, pois o cabeçalho foi removido.
+  // Mantendo apenas as variáveis de estado.
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      <header className="p-4 bg-card shadow-lg border-b border-border">
-        <h1 className="text-2xl font-bold text-foreground">Valdomiro AI</h1>
-        <p className="text-sm text-muted-foreground">
-          Status:{" "}
-          {connectionStatusText}
-        </p>
-      </header>
+      {/* O cabeçalho foi removido daqui */}
 
       {/* Área de Mensagens */}
       <div className="flex-1 p-4 overflow-y-auto space-y-6">
