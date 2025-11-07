@@ -5,7 +5,7 @@ import { Send, Loader2, StopCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import ChatWelcomeScreen from "./ChatWelcomeScreen";
-import ChatHeader from "./ChatHeader"; // Importando o novo componente
+import ChatHeader from "./ChatHeader";
 
 export default function ChatInterface() {
   const {
@@ -21,15 +21,19 @@ export default function ChatInterface() {
   const showWelcomeScreen = displayedMessages.length === 0;
   const showHeader = displayedMessages.length > 0;
 
+  // Calculamos o padding inferior necessário para que a última mensagem não fique escondida pelo formulário fixo.
+  const paddingBottom = showHeader ? "pb-[100px]" : "pb-4"; // 100px é aproximadamente a altura do formulário + padding
+
   return (
-    <div className="flex flex-col h-screen bg-background">
+    // Removendo h-screen e flex-col. Usando min-h-screen para garantir que o fundo cubra a tela.
+    <div className="bg-background min-h-screen flex flex-col">
       
       {/* 1. Cabeçalho (Visível após a primeira mensagem) */}
       {showHeader && <ChatHeader />}
 
       {/* 2. Área de Mensagens / Tela de Boas-Vindas */}
-      {/* Usamos flex-1 para que esta div ocupe o espaço restante */}
-      <div className="flex-1 overflow-y-auto space-y-6 p-4">
+      {/* Removendo flex-1 e overflow-y-auto. Adicionando padding inferior para compensar o formulário fixo. */}
+      <div className={`space-y-6 p-4 ${paddingBottom}`}>
         {showWelcomeScreen ? (
           <ChatWelcomeScreen />
         ) : (
@@ -69,50 +73,53 @@ export default function ChatInterface() {
       </div>
 
       {/* 3. Formulário de Input (Fixo na parte inferior) */}
-      <form 
-        onSubmit={handleSubmit} 
-        className="p-4 bg-card border-t border-border shadow-2xl rounded-t-xl md:max-w-3xl md:mx-auto w-full"
-      >
-        <div className="flex items-center w-full">
-          
-          {/* Input Wrapper: relative position for integrated button */}
-          <div className="relative flex-1">
-            <Input
-              type="text"
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              placeholder="Como posso te ajudar?"
-              className="w-full h-12 p-3 bg-input border-border focus-visible:ring-0 focus-visible:ring-offset-0 pr-12" 
-              disabled={thread.isLoading}
-            />
+      {/* Aplicando fixed bottom-0 e w-full para fixar na parte inferior da tela */}
+      <div className="fixed bottom-0 w-full flex justify-center z-20">
+        <form 
+          onSubmit={handleSubmit} 
+          className="p-4 bg-card border-t border-border shadow-2xl rounded-t-xl md:max-w-3xl w-full"
+        >
+          <div className="flex items-center w-full">
             
-            {/* Botão de Envio integrado */}
-            {!thread.isLoading && (
-                <Button
-                    type="submit"
-                    size="icon"
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-10 w-10 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground"
-                    disabled={!inputMessage.trim()}
-                >
-                    <Send className="h-5 w-5" />
-                </Button>
+            {/* Input Wrapper: relative position for integrated button */}
+            <div className="relative flex-1">
+              <Input
+                type="text"
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                placeholder="Como posso te ajudar?"
+                className="w-full h-12 p-3 bg-input border-border focus-visible:ring-0 focus-visible:ring-offset-0 pr-12" 
+                disabled={thread.isLoading}
+              />
+              
+              {/* Botão de Envio integrado */}
+              {!thread.isLoading && (
+                  <Button
+                      type="submit"
+                      size="icon"
+                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-10 w-10 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+                      disabled={!inputMessage.trim()}
+                  >
+                      <Send className="h-5 w-5" />
+                  </Button>
+              )}
+            </div>
+
+            {/* Botão de Parar (se carregando) */}
+            {thread.isLoading && (
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={() => thread.stop()}
+                className="px-4 h-12 ml-3 rounded-lg"
+              >
+                <StopCircle className="h-5 w-5 mr-2" />
+                Parar
+              </Button>
             )}
           </div>
-
-          {/* Botão de Parar (se carregando) */}
-          {thread.isLoading && (
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={() => thread.stop()}
-              className="px-4 h-12 ml-3 rounded-lg"
-            >
-              <StopCircle className="h-5 w-5 mr-2" />
-              Parar
-            </Button>
-          )}
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
