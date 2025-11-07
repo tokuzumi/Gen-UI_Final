@@ -22,7 +22,6 @@ export default function ChatInterface() {
   const showHeader = displayedMessages.length > 0;
 
   // Calculamos o padding inferior necessário para que a última mensagem não fique escondida pelo formulário fixo.
-  // A altura do formulário é aproximadamente 100px.
   const paddingBottom = showHeader ? "pb-[100px]" : "pb-4"; 
 
   // Se for a tela de boas-vindas, precisamos garantir que ela ocupe a altura restante para centralizar o conteúdo.
@@ -32,10 +31,11 @@ export default function ChatInterface() {
     : "";
 
   return (
-    // Removemos flex-col e h-screen, mantendo min-h-screen para o fundo
+    // O ChatInterface agora ocupa w-full
     <div className="bg-background min-h-screen">
       
       {/* 1. Cabeçalho (Visível após a primeira mensagem) */}
+      {/* O ChatHeader já é sticky e limitado a md:max-w-3xl internamente */}
       {showHeader && <ChatHeader />}
 
       {/* 2. Área de Mensagens / Tela de Boas-Vindas */}
@@ -80,10 +80,10 @@ export default function ChatInterface() {
 
       {/* 3. Formulário de Input (Fixo na parte inferior) */}
       {/* Aplicando fixed bottom-0 e w-full para fixar na parte inferior da tela */}
+      {/* O wrapper fixed agora garante que o formulário limitado (md:max-w-3xl) seja centralizado na viewport. */}
       <div className="fixed bottom-0 w-full flex justify-center z-20">
         <form 
           onSubmit={handleSubmit} 
-          // O form já está limitado a md:max-w-3xl e w-full, o que garante que ele se alinhe com o conteúdo centralizado.
           className="p-4 bg-card border-t border-border shadow-2xl rounded-t-xl md:max-w-3xl w-full"
         >
           <div className="flex items-center w-full">
