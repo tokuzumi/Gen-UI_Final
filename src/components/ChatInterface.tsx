@@ -111,8 +111,8 @@ export default function ChatInterface() {
       <div className="fixed bottom-0 w-full flex justify-center z-20">
         <form 
           onSubmit={handleSubmit} 
-          // Aplicando efeito glass: backdrop-blur-md e bg-card/80
-          className={`p-4 bg-card/80 backdrop-blur-md border-t border-border shadow-2xl rounded-t-xl ${WELCOME_SCREEN_WIDTH} w-full`}
+          // Aumentando a transparência para bg-card/60
+          className={`p-4 bg-card/60 backdrop-blur-md border-t border-border shadow-2xl rounded-t-xl ${WELCOME_SCREEN_WIDTH} w-full`}
         >
           <div className="flex items-center w-full">
             
