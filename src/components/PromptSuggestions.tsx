@@ -20,7 +20,6 @@ export default function PromptSuggestions() {
     // Como o handleSubmit espera um evento de formulário, vamos simular a submissão
     // Nota: O LangGraph SDK lida com a submissão via `thread.submit` no `handleSubmit` do ThreadProvider.
     // Aqui, apenas definimos o input e deixamos o usuário clicar em enviar, ou podemos simular o submit.
-    // Para uma UX mais fluida, vamos simular o submit.
     
     // Criando um evento simulado para passar para handleSubmit
     const simulatedEvent = {
@@ -44,7 +43,7 @@ export default function PromptSuggestions() {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4 max-w-xl mx-auto px-4 md:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto px-4 md:grid-cols-4">
       {SUGGESTIONS.map((suggestion, index) => (
         <Button
           key={index}
