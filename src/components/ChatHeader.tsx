@@ -8,14 +8,15 @@ const LOGO_URL = "https://res.cloudinary.com/dco1sm3hy/image/upload/v1762494737/
 
 export default function ChatHeader() {
   return (
-    <header className="sticky top-0 z-10 bg-card border-b border-border p-4 shadow-md">
+    <header className="sticky top-0 z-10 bg-background border-b border-border p-4 shadow-md">
       <div className="flex justify-center items-center mx-auto md:max-w-3xl">
         <Image
           src={LOGO_URL}
           alt="Gen-UI Logo"
-          width={124} // Tamanho menor para o cabeçalho
-          height={36}
-          className="w-auto h-auto max-w-[124px]"
+          width={248} // Tamanho base maior
+          height={72}
+          // Aplicando classes para manter o tamanho grande em desktop (lg) e um tamanho menor em mobile
+          className="w-auto h-auto max-w-[124px] lg:max-w-[248px]"
         />
       </div>
     </header>
