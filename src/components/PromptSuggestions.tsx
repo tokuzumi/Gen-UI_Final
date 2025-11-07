@@ -7,8 +7,8 @@ import { useThread } from "@/providers/ThreadProvider";
 const SUGGESTIONS = [
   "Seu site está deixando de fazer negócios ...",
   "Só existe uma forma de implementar IA ...",
-  "A UI Generativa é a nova era dos sites com IA",
-  "Foco total no visitante: gere impacto!",
+  "A UI Generativa é a nova era dos sites",
+  "Por que você precisa da Gen-UI?",
 ];
 
 export default function PromptSuggestions() {
