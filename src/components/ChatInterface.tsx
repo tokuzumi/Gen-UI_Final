@@ -58,13 +58,14 @@ export default function ChatInterface() {
             <div
               className={`max-w-xs lg:max-w-md px-4 py-3 rounded-xl shadow-md ${
                 message.type === "human"
-                  ? "bg-primary text-primary-foreground rounded-br-sm"
+                  ? "bg-card text-foreground border border-border rounded-tr-none" // Alterado para bg-card e rounded-tr-none
                   : "bg-card text-foreground border border-border rounded-tl-sm"
               }`}
             >
-              <p className="font-semibold capitalize mb-1 text-sm">
-                {message.type === "human" ? "Você" : "Agente"}
-              </p>
+              {/* Removido o cabeçalho 'Você' */}
+              {message.type === "assistant" && (
+                <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
+              )}
               <p className="text-base whitespace-pre-wrap">{message.content as string}</p>
             </div>
           </div>
