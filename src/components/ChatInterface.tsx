@@ -64,15 +64,7 @@ export default function ChatInterface() {
           </div>
         ))}
         
-        {/* Indicador de Atividade do Agente (Digitando...) */}
-        {thread.isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow">
-              <p className="font-semibold mb-1">Agente</p>
-              <p>Digitando...</p>
-            </div>
-          </div>
-        )}
+        {/* O indicador de atividade do agente (Digitando...) foi removido daqui. */}
       </div>
 
       {/* Formulário de Input */}
