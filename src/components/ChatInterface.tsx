@@ -41,8 +41,8 @@ export default function ChatInterface() {
         {showWelcomeScreen ? (
           <ChatWelcomeScreen />
         ) : (
-          // Reaplicando mx-auto md:max-w-3xl para limitar a largura das mensagens
-          <div className="mx-auto md:max-w-3xl space-y-6"> 
+          // Aumentando a largura máxima para max-w-5xl
+          <div className="mx-auto md:max-w-5xl space-y-6"> 
             {displayedMessages.map((message, index) => (
               <div
                 key={message.id || index}
@@ -78,11 +78,12 @@ export default function ChatInterface() {
       </div>
 
       {/* 3. Formulário de Input (Fixo na parte inferior) */}
-      {/* O wrapper fixed garante que o formulário limitado (md:max-w-3xl) seja centralizado na viewport. */}
+      {/* O wrapper fixed garante que o formulário limitado (md:max-w-5xl) seja centralizado na viewport. */}
       <div className="fixed bottom-0 w-full flex justify-center z-20">
         <form 
           onSubmit={handleSubmit} 
-          className="p-4 bg-card border-t border-border shadow-2xl rounded-t-xl md:max-w-3xl w-full"
+          // Aumentando a largura máxima para max-w-5xl
+          className="p-4 bg-card border-t border-border shadow-2xl rounded-t-xl md:max-w-5xl w-full"
         >
           <div className="flex items-center w-full">
             

@@ -41,7 +41,7 @@ export default function PromptSuggestions() {
   return (
     // w-full garante que ele use 100% da largura do pai (que é 100% da tela em mobile)
     // px-4 fornece o padding lateral desejado.
-    <div className="grid grid-cols-2 gap-4 w-full md:max-w-3xl mx-auto px-4 md:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 w-full md:max-w-5xl mx-auto px-4 md:grid-cols-4">
       {SUGGESTIONS.map((suggestion, index) => (
         <Button
           key={index}
