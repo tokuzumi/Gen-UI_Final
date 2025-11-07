@@ -1,11 +1,10 @@
-// src/components/ChatInterface.tsx
 "use client";
 
 import { useThread } from "@/providers/ThreadProvider";
-import { Send, Loader2, StopCircle, Plus } from "lucide-react";
+import { Send, Loader2, StopCircle } from "lucide-react"; // Plus removido
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import ChatWelcomeScreen from "./ChatWelcomeScreen"; // Importando a nova tela de boas-vindas
+import ChatWelcomeScreen from "./ChatWelcomeScreen";
 
 export default function ChatInterface() {
   const {
@@ -62,43 +61,44 @@ export default function ChatInterface() {
 
       {/* Formulário de Input */}
       <form onSubmit={handleSubmit} className="p-4 bg-card border-t border-border shadow-2xl">
-        <div className="flex space-x-3 items-center">
-          {/* Botão Plus (Adicionar) */}
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="h-12 w-12 text-muted-foreground hover:text-foreground"
-          >
-            <Plus className="h-6 w-6" />
-          </Button>
+        {/* Container centralizado e limitado em largura (simulando a redução de 30% e centralização) */}
+        <div className="flex items-center mx-auto w-full md:max-w-3xl">
+          
+          {/* Input Wrapper: relative position for integrated button */}
+          <div className="relative flex-1">
+            <Input
+              type="text"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              placeholder="Pergunte alguma coisa"
+              // Adicionando rounded-full e pr-12 para o botão integrado
+              className="w-full h-12 p-3 bg-input border-border rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 pr-12" 
+              disabled={thread.isLoading}
+            />
+            
+            {/* Botão de Envio integrado */}
+            {!thread.isLoading && (
+                <Button
+                    type="submit"
+                    size="icon"
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-10 w-10 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+                    disabled={!inputMessage.trim()}
+                >
+                    <Send className="h-5 w-5" />
+                </Button>
+            )}
+          </div>
 
-          <Input
-            type="text"
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            placeholder="Pergunte alguma coisa" // Novo placeholder
-            className="flex-1 p-3 bg-input border-border focus-visible:ring-0 focus-visible:ring-offset-0" 
-            disabled={thread.isLoading}
-          />
-
-          {thread.isLoading ? (
+          {/* Botão de Parar (se carregando) */}
+          {thread.isLoading && (
             <Button
               type="button"
               variant="destructive"
               onClick={() => thread.stop()}
-              className="px-4 h-12"
+              className="px-4 h-12 ml-3 rounded-full"
             >
               <StopCircle className="h-5 w-5 mr-2" />
               Parar
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              className="px-4 h-12 bg-secondary hover:bg-secondary/80 text-secondary-foreground"
-              disabled={!inputMessage.trim()}
-            >
-              <Send className="h-5 w-5" />
             </Button>
           )}
         </div>
