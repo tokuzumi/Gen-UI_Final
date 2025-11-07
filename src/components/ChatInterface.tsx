@@ -3,7 +3,7 @@
 
 import { useStream } from "@langchain/langgraph-sdk/react";
 import type { Message } from "@langchain/langgraph-sdk";
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 
 // Define a interface para o estado do agente.
 interface AgentState {
@@ -16,8 +16,6 @@ const LANGGRAPH_API_URL =
 
 export default function ChatInterface() {
   const [inputMessage, setInputMessage] = useState("");
-  // Estado para a mensagem do usuário que acabou de ser enviada.
-  const [pendingMessage, setPendingMessage] = useState<Message | null>(null);
 
   // O hook useStream se conecta ao servidor do agente LangGraph.
   const thread = useStream<AgentState>({
@@ -36,10 +34,8 @@ export default function ChatInterface() {
       content: inputMessage,
     };
 
-    // 1. Adiciona a mensagem ao estado pendente (para exibição imediata)
-    setPendingMessage(userMessage);
-
-    // 2. Envia a mensagem para o agente.
+    // Envia a mensagem do usuário para o agente.
+    // O SDK deve adicionar esta mensagem ao thread.messages internamente.
     thread.submit({
       messages: [userMessage],
     });
@@ -47,36 +43,8 @@ export default function ChatInterface() {
     setInputMessage("");
   };
 
-  // Efeito para limpar a mensagem pendente assim que o carregamento terminar.
-  useEffect(() => {
-    if (!thread.isLoading && pendingMessage) {
-      // Se o carregamento terminou, o servidor deve ter confirmado a mensagem.
-      // Limpamos o estado pendente.
-      setPendingMessage(null);
-    }
-  }, [thread.isLoading, pendingMessage]);
-
-  // Combina as mensagens do thread com a mensagem pendente (se houver)
-  const displayedMessages = useMemo(() => {
-    let messages = [...thread.messages];
-    
-    // Se o agente está carregando E temos uma mensagem pendente,
-    // adicionamos a mensagem pendente ao final da lista.
-    if (thread.isLoading && pendingMessage) {
-        // Adicionamos a mensagem pendente APENAS se ela ainda não estiver
-        // na lista de mensagens do servidor (para evitar duplicatas).
-        const isConfirmed = messages.some(
-            (msg) => msg.content === pendingMessage.content && msg.type === pendingMessage.type
-        );
-        
-        if (!isConfirmed) {
-            messages = [...messages, pendingMessage];
-        }
-    }
-
-    return messages;
-  }, [thread.messages, thread.isLoading, pendingMessage]);
-
+  // Usamos thread.messages diretamente, confiando na gestão de estado do SDK.
+  const displayedMessages = thread.messages;
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -113,7 +81,7 @@ export default function ChatInterface() {
             </div>
           </div>
         ))}
-        {thread.isLoading && !pendingMessage && ( // Mostra 'Digitando...' apenas se não for a mensagem pendente
+        {thread.isLoading && (
           <div className="flex justify-start">
             <div className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow">
               <p className="font-semibold mb-1">Agente</p>
