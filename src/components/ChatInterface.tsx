@@ -58,11 +58,10 @@ export default function ChatInterface() {
             <div
               className={`max-w-xs lg:max-w-md px-4 py-3 rounded-xl shadow-md ${
                 message.type === "human"
-                  ? "bg-card text-foreground border border-border rounded-tr-none" // Mensagem do Usuário: Fundo card, sem acento, borda superior direita não arredondada
-                  : "text-foreground rounded-tl-sm" // Mensagem do Agente: Fundo transparente, sem borda
+                  ? "bg-card text-foreground border border-border rounded-tr-none"
+                  : "text-foreground rounded-tl-sm"
               }`}
             >
-              {/* O cabeçalho 'Você' foi removido. Mantemos 'Agente' apenas para mensagens do assistente. */}
               {message.type === "assistant" && (
                 <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
               )}
