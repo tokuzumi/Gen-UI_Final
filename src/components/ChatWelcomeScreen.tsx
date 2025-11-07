@@ -24,10 +24,8 @@ export default function ChatWelcomeScreen() {
 
       {/* Título e Contexto - Aplicando padding horizontal aqui */}
       <div className="px-4 w-full">
-        <p className="text-sm text-muted-foreground mb-1">
-          Por CARLOS C TOLEDO
-        </p>
-        <p className="text-base text-foreground mb-12 max-w-md mx-auto">
+        {/* Removido: <p className="text-sm text-muted-foreground mb-1">Por CARLOS C TOLEDO</p> */}
+        <p className="text-base text-muted-foreground mb-12 max-w-md mx-auto">
           Chat AFinance: capacita afiliados e promove excelência no mercado financeiro.
         </p>
       </div>

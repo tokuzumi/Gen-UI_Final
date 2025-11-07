@@ -45,8 +45,9 @@ export default function PromptSuggestions() {
       {SUGGESTIONS.map((suggestion, index) => (
         <Button
           key={index}
-          variant="secondary"
-          className="h-auto p-4 text-left whitespace-normal text-sm font-normal border border-border/50 hover:bg-secondary/70"
+          variant="ghost" // Usando ghost para remover o fundo sólido
+          // Aplicando borda com a cor secondary e garantindo que o texto seja foreground
+          className="h-auto p-4 text-left whitespace-normal text-sm font-normal border border-secondary text-foreground hover:bg-secondary/20"
           onClick={() => handleSuggestionClick(suggestion)}
           disabled={thread.isLoading}
         >
