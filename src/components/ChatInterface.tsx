@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import ChatWelcomeScreen from "./ChatWelcomeScreen";
 import ChatHeader from "./ChatHeader";
-import React, { useRef, useEffect } from "react"; // Importando useRef e useEffect
+import React, { useRef, useEffect } from "react";
 
 // Definindo as larguras para clareza
 const WELCOME_SCREEN_WIDTH = "md:max-w-3xl";
@@ -62,28 +62,35 @@ export default function ChatInterface() {
         ) : (
           // Usando a largura expandida (md:max-w-5xl) APENAS para o conteúdo das mensagens
           <div className={`mx-auto ${MESSAGE_CONTENT_WIDTH} space-y-6`}> 
-            {displayedMessages.map((message, index) => (
-              <div
-                key={message.id || index}
-                className={`flex ${
-                  message.type === "human" ? "justify-end" : "justify-start"
-                }`}
-              >
+            {displayedMessages.map((message, index) => {
+              const isHuman = message.type === "human";
+              
+              // Largura da bolha: max-w-xs em mobile. Em desktop, max-w-md para humano, max-w-xl para agente.
+              const bubbleMaxWidth = isHuman ? "lg:max-w-md" : "lg:max-w-xl";
+
+              return (
                 <div
-                  // Removendo ml-4 e mr-4 das bolhas de mensagem
-                  className={`max-w-xs lg:max-w-md px-4 py-3 rounded-xl shadow-md ${
-                    message.type === "human"
-                      ? "bg-card text-foreground border border-border rounded-tr-none" 
-                      : "text-foreground rounded-tl-sm" 
+                  key={message.id || index}
+                  className={`flex ${
+                    isHuman ? "justify-end" : "justify-start"
                   }`}
                 >
-                  {message.type === "assistant" && (
-                    <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
-                  )}
-                  <p className="text-base whitespace-pre-wrap">{message.content as string}</p>
+                  <div
+                    // Aplicando a largura condicional
+                    className={`max-w-xs ${bubbleMaxWidth} px-4 py-3 rounded-xl shadow-md ${
+                      isHuman
+                        ? "bg-card text-foreground border border-border rounded-tr-none" 
+                        : "text-foreground rounded-tl-sm" 
+                    }`}
+                  >
+                    {!isHuman && (
+                      <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
+                    )}
+                    <p className="text-base whitespace-pre-wrap">{message.content as string}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             
             {/* Indicador de digitação para o agente - Ajustando margem */}
             {isStreaming && (
