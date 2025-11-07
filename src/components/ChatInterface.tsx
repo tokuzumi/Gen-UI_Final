@@ -4,6 +4,7 @@
 import { useStream } from "@langchain/langgraph-sdk/react";
 import type { Message } from "@langchain/langgraph-sdk";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 // Define a interface para o estado do agente.
 interface AgentState {
@@ -29,16 +30,22 @@ export default function ChatInterface() {
     if (!inputMessage.trim()) return;
 
     const userMessage: Message = {
-      id: Date.now().toString(), // ID temporário
+      id: uuidv4(), // Usar uuidv4 para garantir um ID único
       type: "human",
       content: inputMessage,
     };
 
-    // Envia a mensagem do usuário para o agente.
-    // O SDK deve adicionar esta mensagem ao thread.messages internamente.
-    thread.submit({
-      messages: [userMessage],
-    });
+    // Envia a mensagem do usuário para o agente, usando optimisticValues
+    // para adicionar a mensagem imediatamente à UI.
+    thread.submit(
+      { messages: [userMessage] },
+      {
+        optimisticValues: (prev) => ({
+          ...prev,
+          messages: [...(prev.messages ?? []), userMessage],
+        }),
+      },
+    );
 
     setInputMessage("");
   };
