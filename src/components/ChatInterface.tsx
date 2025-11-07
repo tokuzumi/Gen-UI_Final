@@ -3,9 +3,6 @@
 
 // Remover imports de useStream, useState, uuid
 import { useThread } from "@/providers/ThreadProvider"; // Importar o hook
-import { Send, Loader2, StopCircle } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 
 export default function ChatInterface() {
   // Consumir o estado do Provedor
@@ -17,27 +14,37 @@ export default function ChatInterface() {
     handleSubmit,
   } = useThread();
 
-  const isSending = thread.isLoading && inputMessage.trim() !== "";
-  const isStreaming = thread.isLoading && inputMessage.trim() === "";
+  // Variáveis para clarear o status
+  const isStreaming = thread.isLoading && displayedMessages.length > 0 && displayedMessages[displayedMessages.length - 1].type !== 'human';
+  const isConnected = thread.isConnected;
+  const isReady = !thread.isLoading && isConnected;
+  
+  let statusText = "Desconectado";
+  if (isStreaming) {
+    statusText = "Digitando...";
+  } else if (isReady) {
+    statusText = "Conectado e Pronto";
+  } else if (isConnected) {
+    statusText = "Conectado";
+  } else if (thread.isLoading) {
+    statusText = "Enviando...";
+  }
+
 
   return (
-    <div className="flex flex-col h-screen bg-background">
-      <header className="p-4 bg-card shadow-lg border-b border-border">
-        <h1 className="text-2xl font-bold text-foreground">Valdomiro AI</h1>
-        <p className="text-sm text-muted-foreground">
+    <div className="flex flex-col h-screen bg-gray-50">
+      <header className="p-4 bg-white shadow-md">
+        <h1 className="text-xl font-bold text-gray-800">Gen-UI (Gen-UI.com.br)</h1>
+        <p className="text-sm text-gray-500">
           Status:{" "}
-          {isStreaming
-            ? "Digitando..."
-            : thread.isConnected
-            ? "Conectado"
-            : "Desconectado"}
+          {statusText}
         </p>
       </header>
 
       {/* Área de Mensagens */}
-      <div className="flex-1 p-4 overflow-y-auto space-y-6">
+      <div className="flex-1 p-4 overflow-y-auto space-y-4">
         {displayedMessages.length === 0 && (
-          <div className="text-center text-muted-foreground mt-10">
+          <div className="text-center text-gray-500 mt-10">
             Diga olá para o seu agente LangGraph!
           </div>
         )}
@@ -49,63 +56,50 @@ export default function ChatInterface() {
             }`}
           >
             <div
-              className={`max-w-xs lg:max-w-md px-4 py-3 rounded-xl shadow-md ${
+              className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow ${
                 message.type === "human"
-                  ? "bg-primary text-primary-foreground rounded-br-sm"
-                  : "bg-card text-foreground border border-border rounded-tl-sm"
+                  ? "bg-blue-500 text-white"
+                  : "bg-white text-gray-800 border border-gray-200"
               }`}
             >
-              <p className="font-semibold capitalize mb-1 text-sm">
+              <p className="font-semibold capitalize mb-1">
                 {message.type === "human" ? "Você" : "Agente"}
               </p>
-              <p className="text-base whitespace-pre-wrap">{message.content as string}</p>
+              <p>{message.content as string}</p>
             </div>
           </div>
         ))}
-        {/* Indicador de digitação para o agente */}
-        {isStreaming && (
-            <div className="flex justify-start">
-                <div className="max-w-xs lg:max-w-md px-4 py-3 rounded-xl bg-card text-foreground border border-border rounded-tl-sm">
-                    <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
-                    <div className="flex items-center space-x-2">
-                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                        <p className="text-base text-muted-foreground">Digitando...</p>
-                    </div>
-                </div>
-            </div>
-        )}
+        {/* O "Digitando..." agora é gerenciado pelo status no Header */}
       </div>
 
       {/* Formulário de Input */}
-      <form onSubmit={handleSubmit} className="p-4 bg-card border-t border-border shadow-2xl">
-        <div className="flex space-x-3 items-center">
-          <Input
+      <form onSubmit={handleSubmit} className="p-4 bg-white border-t shadow-lg">
+        <div className="flex space-x-3">
+          <input
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder="Digite sua mensagem..."
-            className="flex-1 p-3 bg-input border-border focus-visible:ring-primary"
+            className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
             disabled={thread.isLoading}
           />
 
           {thread.isLoading ? (
-            <Button
+            <button
               type="button"
-              variant="destructive"
               onClick={() => thread.stop()}
-              className="px-4 h-12"
+              className="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-150"
             >
-              <StopCircle className="h-5 w-5 mr-2" />
               Parar
-            </Button>
+            </button>
           ) : (
-            <Button
+            <button
               type="submit"
-              className="px-4 h-12 bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150"
               disabled={!inputMessage.trim()}
             >
-              <Send className="h-5 w-5" />
-            </Button>
+              Enviar
+            </button>
           )}
         </div>
       </form>
