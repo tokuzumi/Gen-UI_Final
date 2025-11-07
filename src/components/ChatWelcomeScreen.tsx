@@ -14,9 +14,11 @@ export default function ChatWelcomeScreen() {
       <Image
         src={LOGO_URL}
         alt="Gen-UI Logo"
-        width={165}
-        height={48}
-        className="w-auto h-auto max-w-[165px] mb-6"
+        width={248} // Novo tamanho base para otimização
+        height={72} // Novo tamanho base para otimização
+        // Em telas pequenas, limitamos a largura para 165px (tamanho anterior).
+        // Em telas grandes (lg), permitimos que ele use o tamanho otimizado de 248px.
+        className="w-auto h-auto max-w-[165px] lg:max-w-[248px] mb-6"
       />
 
       {/* Título e Contexto */}
