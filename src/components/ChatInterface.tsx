@@ -3,7 +3,7 @@
 
 import { useStream } from "@langchain/langgraph-sdk/react";
 import type { Message } from "@langchain/langgraph-sdk";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 // Define a interface para o estado do agente.
 interface AgentState {
@@ -16,8 +16,7 @@ const LANGGRAPH_API_URL =
 
 export default function ChatInterface() {
   const [inputMessage, setInputMessage] = useState("");
-  // NOVO: Estado para a mensagem do usuário que acabou de ser enviada,
-  // mas ainda não foi confirmada pelo servidor.
+  // Estado para a mensagem do usuário que acabou de ser enviada.
   const [pendingMessage, setPendingMessage] = useState<Message | null>(null);
 
   // O hook useStream se conecta ao servidor do agente LangGraph.
@@ -48,14 +47,24 @@ export default function ChatInterface() {
     setInputMessage("");
   };
 
-  // 3. Combina as mensagens do thread com a mensagem pendente (se houver)
+  // Efeito para limpar a mensagem pendente assim que o carregamento terminar.
+  useEffect(() => {
+    if (!thread.isLoading && pendingMessage) {
+      // Se o carregamento terminou, o servidor deve ter confirmado a mensagem.
+      // Limpamos o estado pendente.
+      setPendingMessage(null);
+    }
+  }, [thread.isLoading, pendingMessage]);
+
+  // Combina as mensagens do thread com a mensagem pendente (se houver)
   const displayedMessages = useMemo(() => {
     let messages = [...thread.messages];
     
-    // Se a thread estiver carregando e houver uma mensagem pendente,
-    // e a mensagem pendente ainda não estiver no thread.messages, adicione-a.
+    // Se o agente está carregando E temos uma mensagem pendente,
+    // adicionamos a mensagem pendente ao final da lista.
     if (thread.isLoading && pendingMessage) {
-        // Verifica se a mensagem pendente já foi incluída pelo servidor
+        // Adicionamos a mensagem pendente APENAS se ela ainda não estiver
+        // na lista de mensagens do servidor (para evitar duplicatas).
         const isConfirmed = messages.some(
             (msg) => msg.content === pendingMessage.content && msg.type === pendingMessage.type
         );
@@ -63,12 +72,6 @@ export default function ChatInterface() {
         if (!isConfirmed) {
             messages = [...messages, pendingMessage];
         }
-    }
-    
-    // Se o carregamento terminou, a mensagem pendente deve ter sido confirmada
-    // e podemos limpar o estado pendente.
-    if (!thread.isLoading && pendingMessage) {
-        setPendingMessage(null);
     }
 
     return messages;
