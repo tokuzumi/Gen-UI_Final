@@ -39,7 +39,7 @@ export default function PromptSuggestions() {
   };
 
   return (
-    // Restaurando a largura máxima para md:max-w-3xl
+    // Mantendo a largura máxima para md:max-w-3xl (tela inicial)
     <div className="grid grid-cols-2 gap-4 w-full md:max-w-3xl mx-auto px-4 md:grid-cols-4">
       {SUGGESTIONS.map((suggestion, index) => (
         <Button
