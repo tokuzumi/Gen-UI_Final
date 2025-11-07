@@ -1,40 +1,56 @@
-// src/components/ChatInterface.tsx (CÓDIGO DE TESTE)
+// src/components/ChatInterface.tsx
 "use client";
 
-// Importações do LangGraph removidas temporariamente
+import { useStream } from "@langchain/langgraph-sdk/react";
+import type { Message } from "@langchain/langgraph-sdk";
 import { useState } from "react";
+
+// Define a interface para o estado do agente.
+interface AgentState {
+  messages: Message[];
+}
+
+// Define a URL da API usando a variável de ambiente, com um fallback para o padrão local.
+const LANGGRAPH_API_URL =
+  process.env.NEXT_PUBLIC_LANGGRAPH_API_URL || "http://localhost:2024";
 
 export default function ChatInterface() {
   const [inputMessage, setInputMessage] = useState("");
 
-  // Lógica do useStream removida. Apenas um componente React simples.
-  const isLoading = false;
-  const messages = [
-    { id: "1", type: "ai", content: "Olá! Este é um teste de renderização." },
-    { id: "2", type: "human", content: "O chat está funcionando?" },
-  ];
+  // O hook useStream se conecta ao servidor do agente LangGraph.
+  const thread = useStream<AgentState>({
+    apiUrl: LANGGRAPH_API_URL, // Usando a variável de ambiente
+    assistantId: "agent",
+    messagesKey: "messages",
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Mensagem enviada: ${inputMessage}`);
+    if (!inputMessage.trim()) return;
+
+    // Envia a mensagem do usuário para o agente.
+    thread.submit({
+      messages: [{ type: "human", content: inputMessage }],
+    });
+
     setInputMessage("");
   };
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <header className="p-4 bg-white shadow-md">
-        <h1 className="text-xl font-bold text-gray-800">
-          TESTE: Se você vir isso, o problema é o useStream()
-        </h1>
-        <p className="text-sm text-red-500">
-          Se a página ainda estiver em branco, o problema é a instalação da
-          dependência ou a configuração do Next.js.
-        </p>
+        <h1 className="text-xl font-bold text-gray-800">LangGraph Agent Chat</h1>
+        <p className="text-sm text-gray-500">Conectado a: {LANGGRAPH_API_URL}</p>
       </header>
 
       {/* Área de Mensagens */}
       <div className="flex-1 p-4 overflow-y-auto space-y-4">
-        {messages.map((message) => (
+        {thread.messages.length === 0 && (
+          <div className="text-center text-gray-500 mt-10">
+            Diga olá para o seu agente LangGraph!
+          </div>
+        )}
+        {thread.messages.map((message) => (
           <div
             key={message.id}
             className={`flex ${
@@ -55,6 +71,14 @@ export default function ChatInterface() {
             </div>
           </div>
         ))}
+        {thread.isLoading && (
+          <div className="flex justify-start">
+            <div className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow">
+              <p className="font-semibold mb-1">Agente</p>
+              <p>Digitando...</p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Formulário de Input */}
@@ -66,16 +90,26 @@ export default function ChatInterface() {
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder="Digite sua mensagem..."
             className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-            disabled={isLoading}
+            disabled={thread.isLoading}
           />
 
-          <button
-            type="submit"
-            className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150"
-            disabled={!inputMessage.trim()}
-          >
-            Enviar
-          </button>
+          {thread.isLoading ? (
+            <button
+              type="button"
+              onClick={() => thread.stop()}
+              className="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition duration-150"
+            >
+              Parar
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-150"
+              disabled={!inputMessage.trim()}
+            >
+              Enviar
+            </button>
+          )}
         </div>
       </form>
     </div>
