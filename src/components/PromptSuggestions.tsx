@@ -5,10 +5,10 @@ import { Button } from "./ui/button";
 import { useThread } from "@/providers/ThreadProvider";
 
 const SUGGESTIONS = [
-  "Quais são os benefícios do programa...",
-  "Como funciona o sistema de afiliados bancários?",
-  "Que tipos de produtos estão disponíveis no...",
-  "Como posso começar a indicar leads pelo...",
+  "Seu site está deixando de fazer negócios ...",
+  "Só existe uma forma de implementar IA ...",
+  "A UI Generativa é a nova era dos sites ...",
+  "A virada de chave: Surpreenda sua Audiência!",
 ];
 
 export default function PromptSuggestions() {
