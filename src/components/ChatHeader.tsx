@@ -8,7 +8,7 @@ const LOGO_URL = "https://res.cloudinary.com/dco1sm3hy/image/upload/v1762494737/
 
 export default function ChatHeader() {
   return (
-    <header className="sticky top-0 z-10 bg-background border-b border-border p-4 shadow-md">
+    <header className="bg-background border-b border-border p-4 shadow-md">
       <div className="flex justify-center items-center mx-auto md:max-w-3xl">
         <Image
           src={LOGO_URL}

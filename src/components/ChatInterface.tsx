@@ -25,7 +25,6 @@ export default function ChatInterface() {
   const paddingBottom = showHeader ? "pb-[100px]" : "pb-4"; 
 
   // Se for a tela de boas-vindas, precisamos garantir que ela ocupe a altura restante para centralizar o conteúdo.
-  // Usamos min-h-[calc(100vh - altura_do_header - altura_do_input)]
   const welcomeScreenClasses = showWelcomeScreen 
     ? "min-h-[calc(100vh-100px)] flex flex-col justify-center" 
     : "";
@@ -34,8 +33,7 @@ export default function ChatInterface() {
     // O ChatInterface agora ocupa w-full
     <div className="bg-background min-h-screen">
       
-      {/* 1. Cabeçalho (Visível após a primeira mensagem) */}
-      {/* O ChatHeader já é sticky e limitado a md:max-w-3xl internamente */}
+      {/* 1. Cabeçalho (Visível após a primeira mensagem) - Não é mais sticky */}
       {showHeader && <ChatHeader />}
 
       {/* 2. Área de Mensagens / Tela de Boas-Vindas */}
@@ -43,8 +41,8 @@ export default function ChatInterface() {
         {showWelcomeScreen ? (
           <ChatWelcomeScreen />
         ) : (
-          // Centralizando as mensagens horizontalmente em telas grandes
-          <div className="mx-auto md:max-w-3xl space-y-6">
+          // Removendo mx-auto md:max-w-3xl daqui para que as mensagens ocupem a largura total do ChatInterface
+          <div className="space-y-6"> 
             {displayedMessages.map((message, index) => (
               <div
                 key={message.id || index}
@@ -53,10 +51,11 @@ export default function ChatInterface() {
                 }`}
               >
                 <div
+                  // Aplicando max-w-md para limitar a largura da bolha da mensagem, mas permitindo que a bolha comece na borda
                   className={`max-w-xs lg:max-w-md px-4 py-3 rounded-xl shadow-md ${
                     message.type === "human"
-                      ? "bg-card text-foreground border border-border rounded-tr-none"
-                      : "text-foreground rounded-tl-sm"
+                      ? "bg-card text-foreground border border-border rounded-tr-none mr-4" // Adicionando margem direita
+                      : "text-foreground rounded-tl-sm ml-4" // Adicionando margem esquerda
                   }`}
                 >
                   {message.type === "assistant" && (
@@ -79,8 +78,7 @@ export default function ChatInterface() {
       </div>
 
       {/* 3. Formulário de Input (Fixo na parte inferior) */}
-      {/* Aplicando fixed bottom-0 e w-full para fixar na parte inferior da tela */}
-      {/* O wrapper fixed agora garante que o formulário limitado (md:max-w-3xl) seja centralizado na viewport. */}
+      {/* O wrapper fixed garante que o formulário limitado (md:max-w-3xl) seja centralizado na viewport. */}
       <div className="fixed bottom-0 w-full flex justify-center z-20">
         <form 
           onSubmit={handleSubmit} 
