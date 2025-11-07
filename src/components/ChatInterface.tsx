@@ -59,9 +59,9 @@ export default function ChatInterface() {
         )}
       </div>
 
-      {/* Formulário de Input */}
-      <form onSubmit={handleSubmit} className="p-4 bg-card border-t border-border shadow-2xl">
-        {/* Container centralizado e limitado em largura (simulando a redução de 30% e centralização) */}
+      {/* Formulário de Input - Aplicando rounded-t-xl aqui */}
+      <form onSubmit={handleSubmit} className="p-4 bg-card border-t border-border shadow-2xl rounded-t-xl">
+        {/* Container centralizado e limitado em largura */}
         <div className="flex items-center mx-auto w-full md:max-w-3xl">
           
           {/* Input Wrapper: relative position for integrated button */}
@@ -71,8 +71,8 @@ export default function ChatInterface() {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               placeholder="Pergunte alguma coisa"
-              // Adicionando rounded-full e pr-12 para o botão integrado
-              className="w-full h-12 p-3 bg-input border-border rounded-full focus-visible:ring-0 focus-visible:ring-offset-0 pr-12" 
+              // Removendo rounded-full, usando arredondamento padrão e pr-12
+              className="w-full h-12 p-3 bg-input border-border focus-visible:ring-0 focus-visible:ring-offset-0 pr-12" 
               disabled={thread.isLoading}
             />
             
@@ -81,6 +81,7 @@ export default function ChatInterface() {
                 <Button
                     type="submit"
                     size="icon"
+                    // Mantendo rounded-full para o botão de ícone
                     className="absolute right-1 top-1/2 transform -translate-y-1/2 h-10 w-10 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground"
                     disabled={!inputMessage.trim()}
                 >
@@ -95,7 +96,8 @@ export default function ChatInterface() {
               type="button"
               variant="destructive"
               onClick={() => thread.stop()}
-              className="px-4 h-12 ml-3 rounded-full"
+              // Usando rounded-lg para o botão de parar
+              className="px-4 h-12 ml-3 rounded-lg"
             >
               <StopCircle className="h-5 w-5 mr-2" />
               Parar
