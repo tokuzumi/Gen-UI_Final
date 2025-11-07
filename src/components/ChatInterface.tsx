@@ -36,10 +36,11 @@ export default function ChatInterface() {
     };
 
     // Envia a mensagem do usuário para o agente, usando optimisticValues
-    // para adicionar a mensagem imediatamente à UI.
+    // e forçando o streamMode: ["values"] para garantir a sincronização completa do estado.
     thread.submit(
       { messages: [userMessage] },
       {
+        streamMode: ["values"], 
         optimisticValues: (prev) => ({
           ...prev,
           messages: [...(prev.messages ?? []), userMessage],
