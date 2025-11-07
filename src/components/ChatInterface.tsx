@@ -1,64 +1,31 @@
 // src/components/ChatInterface.tsx
 "use client";
 
-import { useStream } from "@langchain/langgraph-sdk/react";
-import type { Message } from "@langchain/langgraph-sdk";
-import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-
-// Define a interface para o estado do agente.
-interface AgentState {
-  messages: Message[];
-}
-
-// Define a URL da API usando a variável de ambiente, com um fallback para o padrão local.
-const LANGGRAPH_API_URL =
-  process.env.NEXT_PUBLIC_LANGGRAPH_API_URL || "http://localhost:2024";
+// Remover imports de useStream, useState, uuid
+import { useThread } from "@/providers/ThreadProvider"; // Importar o hook
 
 export default function ChatInterface() {
-  const [inputMessage, setInputMessage] = useState("");
-
-  // O hook useStream se conecta ao servidor do agente LangGraph.
-  const thread = useStream<AgentState>({
-    apiUrl: LANGGRAPH_API_URL,
-    assistantId: "agent",
-    messagesKey: "messages",
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputMessage.trim()) return;
-
-    const userMessage: Message = {
-      id: uuidv4(), // Usar uuidv4 para garantir um ID único
-      type: "human",
-      content: inputMessage,
-    };
-
-    // Envia a mensagem do usuário para o agente, usando optimisticValues
-    // e forçando o streamMode: ["values"] para garantir a sincronização completa do estado.
-    thread.submit(
-      { messages: [userMessage] },
-      {
-        streamMode: ["values"], 
-        optimisticValues: (prev) => ({
-          ...prev,
-          messages: [...(prev.messages ?? []), userMessage],
-        }),
-      },
-    );
-
-    setInputMessage("");
-  };
-
-  // Usamos thread.messages diretamente, confiando na gestão de estado do SDK.
-  const displayedMessages = thread.messages;
+  // Consumir o estado do Provedor
+  const {
+    thread,
+    displayedMessages,
+    inputMessage,
+    setInputMessage,
+    handleSubmit,
+  } = useThread();
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <header className="p-4 bg-white shadow-md">
-        <h1 className="text-xl font-bold text-gray-800">LangGraph Agent Chat</h1>
-        <p className="text-sm text-gray-500">Conectado a: {LANGGRAPH_API_URL}</p>
+        <h1 className="text-xl font-bold text-gray-800">Gen-UI (Gen-UI.com.br)</h1>
+        <p className="text-sm text-gray-500">
+          Status:{" "}
+          {thread.isLoading
+            ? "Digitando..."
+            : thread.isConnected
+            ? "Conectado"
+            : "Desconectado"}
+        </p>
       </header>
 
       {/* Área de Mensagens */}
@@ -89,14 +56,7 @@ export default function ChatInterface() {
             </div>
           </div>
         ))}
-        {thread.isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow">
-              <p className="font-semibold mb-1">Agente</p>
-              <p>Digitando...</p>
-            </div>
-          </div>
-        )}
+        {/* O "Digitando..." agora é gerenciado pelo status no Header */}
       </div>
 
       {/* Formulário de Input */}
