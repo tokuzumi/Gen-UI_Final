@@ -7,6 +7,10 @@ import { Input } from "./ui/input";
 import ChatWelcomeScreen from "./ChatWelcomeScreen";
 import ChatHeader from "./ChatHeader";
 
+// Definindo as larguras para clareza
+const WELCOME_SCREEN_WIDTH = "md:max-w-3xl";
+const MESSAGE_CONTENT_WIDTH = "md:max-w-5xl";
+
 export default function ChatInterface() {
   const {
     thread,
@@ -21,9 +25,6 @@ export default function ChatInterface() {
   const showWelcomeScreen = displayedMessages.length === 0;
   const showHeader = displayedMessages.length > 0;
 
-  // Define a largura máxima baseada no estado do chat
-  const chatMaxWidthClass = showWelcomeScreen ? "md:max-w-3xl" : "md:max-w-5xl";
-
   // Calculamos o padding inferior necessário para que a última mensagem não fique escondida pelo formulário fixo.
   const paddingBottom = showHeader ? "pb-[100px]" : "pb-4"; 
 
@@ -36,16 +37,17 @@ export default function ChatInterface() {
     // O ChatInterface agora ocupa w-full
     <div className="bg-background min-h-screen">
       
-      {/* 1. Cabeçalho (Visível após a primeira mensagem) - Agora usa md:max-w-5xl (definido em ChatHeader.tsx) */}
+      {/* 1. Cabeçalho (Visível após a primeira mensagem) - Usa md:max-w-3xl (definido em ChatHeader.tsx) */}
       {showHeader && <ChatHeader />}
 
       {/* 2. Área de Mensagens / Tela de Boas-Vindas */}
       <div className={`space-y-6 p-4 ${welcomeScreenClasses} ${paddingBottom}`}>
         {showWelcomeScreen ? (
+          // A tela de boas-vindas usa a largura padrão
           <ChatWelcomeScreen />
         ) : (
-          // Usando a largura maior (md:max-w-5xl) para o chat ativo
-          <div className={`mx-auto ${chatMaxWidthClass} space-y-6`}> 
+          // Usando a largura expandida (md:max-w-5xl) APENAS para o conteúdo das mensagens
+          <div className={`mx-auto ${MESSAGE_CONTENT_WIDTH} space-y-6`}> 
             {displayedMessages.map((message, index) => (
               <div
                 key={message.id || index}
@@ -81,12 +83,12 @@ export default function ChatInterface() {
       </div>
 
       {/* 3. Formulário de Input (Fixo na parte inferior) */}
-      {/* O wrapper fixed garante que o formulário limitado (md:max-w-5xl) seja centralizado na viewport. */}
+      {/* O wrapper fixed garante que o formulário limitado (md:max-w-3xl) seja centralizado na viewport. */}
       <div className="fixed bottom-0 w-full flex justify-center z-20">
         <form 
           onSubmit={handleSubmit} 
-          // Usando a largura maior (md:max-w-5xl) para o input fixo
-          className={`p-4 bg-card border-t border-border shadow-2xl rounded-t-xl ${chatMaxWidthClass} w-full`}
+          // Usando a largura padrão (md:max-w-3xl) para o input fixo, independentemente do estado do chat
+          className={`p-4 bg-card border-t border-border shadow-2xl rounded-t-xl ${WELCOME_SCREEN_WIDTH} w-full`}
         >
           <div className="flex items-center w-full">
             
