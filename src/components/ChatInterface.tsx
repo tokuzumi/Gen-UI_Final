@@ -90,8 +90,8 @@ export default function ChatInterface() {
           ) : (
             <Button
               type="submit"
-              variant="ghost" // Usando variante ghost
-              className="px-4 h-12 text-primary hover:bg-accent" // Aplicando cor primária apenas ao ícone/texto e hover sutil
+              // Usando bg-secondary (escuro) e text-secondary-foreground (branco)
+              className="px-4 h-12 bg-secondary hover:bg-secondary/80 text-secondary-foreground"
               disabled={!inputMessage.trim()}
             >
               <Send className="h-5 w-5" />
