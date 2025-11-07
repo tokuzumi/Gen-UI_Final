@@ -43,7 +43,7 @@ export default function PromptSuggestions() {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto px-4 md:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 max-w-3xl mx-auto px-4 md:grid-cols-4">
       {SUGGESTIONS.map((suggestion, index) => (
         <Button
           key={index}
