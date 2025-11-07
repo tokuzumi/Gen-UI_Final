@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import ChatWelcomeScreen from "./ChatWelcomeScreen";
 import ChatHeader from "./ChatHeader";
+import React, { useRef, useEffect } from "react"; // Importando useRef e useEffect
 
 // Definindo as larguras para clareza
 const WELCOME_SCREEN_WIDTH = "md:max-w-3xl";
@@ -20,10 +21,23 @@ export default function ChatInterface() {
     handleSubmit,
   } = useThread();
 
+  // 1. Criando a referência para o contêiner de mensagens
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   const isSending = thread.isLoading && inputMessage.trim() !== "";
   const isStreaming = thread.isLoading && inputMessage.trim() === "";
   const showWelcomeScreen = displayedMessages.length === 0;
   const showHeader = displayedMessages.length > 0;
+
+  // 2. Função de rolagem
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // 3. Efeito para rolar sempre que as mensagens mudarem
+  useEffect(() => {
+    scrollToBottom();
+  }, [displayedMessages]);
 
   // Calculamos o padding inferior necessário para que a última mensagem não fique escondida pelo formulário fixo.
   const paddingBottom = showHeader ? "pb-[100px]" : "pb-4"; 
@@ -78,12 +92,14 @@ export default function ChatInterface() {
                     <p className="text-sm text-muted-foreground">O Agente está digitando...</p>
                 </div>
             )}
+            
+            {/* 4. Elemento de referência para rolagem */}
+            <div ref={messagesEndRef} />
           </div>
         )}
       </div>
 
       {/* 3. Formulário de Input (Fixo na parte inferior) */}
-      {/* O padding do formulário fixo já é p-4, o que está bom para o input */}
       <div className="fixed bottom-0 w-full flex justify-center z-20">
         <form 
           onSubmit={handleSubmit} 
