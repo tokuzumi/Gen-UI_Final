@@ -8,7 +8,7 @@ const SUGGESTIONS = [
   "Seu site está deixando de fazer negócios ...",
   "Só existe uma forma de implementar IA ...",
   "A UI Generativa é a nova era dos sites com IA",
-  "Foco total no seu visitante: gere impacto!",
+  "Foco total no visitante: gere impacto!",
 ];
 
 export default function PromptSuggestions() {
