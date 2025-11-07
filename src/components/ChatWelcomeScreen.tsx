@@ -26,7 +26,7 @@ export default function ChatWelcomeScreen() {
       <div className="px-4 w-full">
         {/* Removido: <p className="text-sm text-muted-foreground mb-1">Por CARLOS C TOLEDO</p> */}
         <p className="text-base text-muted-foreground mb-12 max-w-md mx-auto">
-          Este site foi criado para entregar conteúdo personalizado, focado na sua experiência. Simples assim!
+          Este site foi criado para entregar conteúdo personalizado e totalmente focado na sua experiência: simples assim!
         </p>
       </div>
 
