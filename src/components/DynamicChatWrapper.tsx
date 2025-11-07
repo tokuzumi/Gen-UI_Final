@@ -9,8 +9,8 @@ const DynamicChatInterface = dynamic(
   {
     ssr: false, // Desativa a renderização no lado do servidor
     loading: () => (
-      <div className="h-screen flex items-center justify-center bg-gray-50">
-        <p className="text-lg text-gray-600">Carregando interface de chat...</p>
+      <div className="h-screen flex items-center justify-center bg-background">
+        <p className="text-lg text-foreground">Carregando interface de chat...</p>
       </div>
     ),
   }
