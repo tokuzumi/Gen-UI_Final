@@ -70,16 +70,11 @@ export default function ChatInterface() {
           </div>
         ))}
         
-        {/* Indicador de digitação para o agente */}
+        {/* Indicador de digitação para o agente - Simplificado */}
         {isStreaming && (
-            <div className="flex justify-start">
-                <div className="max-w-xs lg:max-w-md px-4 py-3 rounded-xl text-foreground rounded-tl-sm">
-                    <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
-                    <div className="flex items-center space-x-2">
-                        <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                        <p className="text-base text-muted-foreground">Digitando...</p>
-                    </div>
-                </div>
+            <div className="flex justify-start items-center space-x-2 ml-4">
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                <p className="text-sm text-muted-foreground">O Agente está digitando...</p>
             </div>
         )}
       </div>
