@@ -12,20 +12,17 @@ export default function ChatInterface() {
     handleSubmit,
   } = useThread();
 
-  let statusText = "Conectando...";
+  // Lógica para o Status do Cabeçalho:
+  // Se houver um erro, mostra erro.
+  // Se houver mensagens (indicando que a comunicação funcionou) OU se a conexão estiver ativa, mostra Conectado.
+  let connectionStatusText = "Conectando...";
 
   if (thread.error) {
-    statusText = "Erro de Conexão";
-  } else if (thread.isLoading) {
-    // O agente está ativo (enviando ou recebendo)
-    statusText = "Digitando...";
+    connectionStatusText = "Erro de Conexão";
   } else if (thread.isConnected || displayedMessages.length > 0) {
-    // Se thread.isConnected for true OU se já houver mensagens no histórico,
-    // consideramos a conexão funcional e o agente pronto.
-    statusText = "Conectado e Pronto";
+    connectionStatusText = "Conectado";
   } else {
-    // Se não estiver carregando, não estiver conectado e não houver histórico.
-    statusText = "Desconectado";
+    connectionStatusText = "Desconectado";
   }
 
   return (
@@ -34,7 +31,7 @@ export default function ChatInterface() {
         <h1 className="text-xl font-bold text-gray-800">Gen-UI (Gen-UI.com.br)</h1>
         <p className="text-sm text-gray-500">
           Status:{" "}
-          {statusText}
+          {connectionStatusText}
         </p>
       </header>
 
@@ -66,6 +63,16 @@ export default function ChatInterface() {
             </div>
           </div>
         ))}
+        
+        {/* Indicador de Atividade do Agente (Digitando...) */}
+        {thread.isLoading && (
+          <div className="flex justify-start">
+            <div className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow">
+              <p className="font-semibold mb-1">Agente</p>
+              <p>Digitando...</p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Formulário de Input */}
