@@ -73,7 +73,8 @@ export default function ChatInterface() {
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder="Digite sua mensagem..."
-            className="flex-1 p-3 bg-input border-border focus-visible:ring-primary"
+            // Sobrescrevendo o foco para garantir que não haja anel de cor de acento.
+            className="flex-1 p-3 bg-input border-border focus-visible:ring-0 focus-visible:ring-offset-0" 
             disabled={thread.isLoading}
           />
 
