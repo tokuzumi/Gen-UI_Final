@@ -20,9 +20,9 @@ export default function ChatWelcomeScreen() {
       />
 
       {/* Título e Contexto */}
-      <h1 className="text-3xl font-bold text-foreground mb-2">
+      {/* <h1 className="text-3xl font-bold text-foreground mb-2">
         Gen-UI - Programa de Afiliados
-      </h1>
+      </h1> */}
       <p className="text-sm text-muted-foreground mb-1">
         Por CARLOS C TOLEDO
       </p>
