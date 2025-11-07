@@ -3,7 +3,7 @@
 
 import { useStream } from "@langchain/langgraph-sdk/react";
 import type { Message } from "@langchain/langgraph-sdk";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 // Define a interface para o estado do agente.
 interface AgentState {
@@ -16,10 +16,13 @@ const LANGGRAPH_API_URL =
 
 export default function ChatInterface() {
   const [inputMessage, setInputMessage] = useState("");
+  // NOVO: Estado para a mensagem do usuário que acabou de ser enviada,
+  // mas ainda não foi confirmada pelo servidor.
+  const [pendingMessage, setPendingMessage] = useState<Message | null>(null);
 
   // O hook useStream se conecta ao servidor do agente LangGraph.
   const thread = useStream<AgentState>({
-    apiUrl: LANGGRAPH_API_URL, // Usando a variável de ambiente
+    apiUrl: LANGGRAPH_API_URL,
     assistantId: "agent",
     messagesKey: "messages",
   });
@@ -28,14 +31,49 @@ export default function ChatInterface() {
     e.preventDefault();
     if (!inputMessage.trim()) return;
 
-    // Envia a mensagem do usuário para o agente.
-    // O useStream deve adicionar esta mensagem ao thread.messages
+    const userMessage: Message = {
+      id: Date.now().toString(), // ID temporário
+      type: "human",
+      content: inputMessage,
+    };
+
+    // 1. Adiciona a mensagem ao estado pendente (para exibição imediata)
+    setPendingMessage(userMessage);
+
+    // 2. Envia a mensagem para o agente.
     thread.submit({
-      messages: [{ type: "human", content: inputMessage }],
+      messages: [userMessage],
     });
 
     setInputMessage("");
   };
+
+  // 3. Combina as mensagens do thread com a mensagem pendente (se houver)
+  const displayedMessages = useMemo(() => {
+    let messages = [...thread.messages];
+    
+    // Se a thread estiver carregando e houver uma mensagem pendente,
+    // e a mensagem pendente ainda não estiver no thread.messages, adicione-a.
+    if (thread.isLoading && pendingMessage) {
+        // Verifica se a mensagem pendente já foi incluída pelo servidor
+        const isConfirmed = messages.some(
+            (msg) => msg.content === pendingMessage.content && msg.type === pendingMessage.type
+        );
+        
+        if (!isConfirmed) {
+            messages = [...messages, pendingMessage];
+        }
+    }
+    
+    // Se o carregamento terminou, a mensagem pendente deve ter sido confirmada
+    // e podemos limpar o estado pendente.
+    if (!thread.isLoading && pendingMessage) {
+        setPendingMessage(null);
+    }
+
+    return messages;
+  }, [thread.messages, thread.isLoading, pendingMessage]);
+
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -46,16 +84,14 @@ export default function ChatInterface() {
 
       {/* Área de Mensagens */}
       <div className="flex-1 p-4 overflow-y-auto space-y-4">
-        {thread.messages.length === 0 && (
+        {displayedMessages.length === 0 && (
           <div className="text-center text-gray-500 mt-10">
             Diga olá para o seu agente LangGraph!
           </div>
         )}
-        {/* Usamos o índice como fallback key se o ID não estiver presente,
-            embora o LangGraph SDK deva fornecer IDs. */}
-        {thread.messages.map((message, index) => (
+        {displayedMessages.map((message, index) => (
           <div
-            key={message.id || index} // Usando index como fallback key
+            key={message.id || index}
             className={`flex ${
               message.type === "human" ? "justify-end" : "justify-start"
             }`}
@@ -70,12 +106,11 @@ export default function ChatInterface() {
               <p className="font-semibold capitalize mb-1">
                 {message.type === "human" ? "Você" : "Agente"}
               </p>
-              {/* Garantindo que o conteúdo seja tratado como string */}
               <p>{message.content as string}</p>
             </div>
           </div>
         ))}
-        {thread.isLoading && (
+        {thread.isLoading && !pendingMessage && ( // Mostra 'Digitando...' apenas se não for a mensagem pendente
           <div className="flex justify-start">
             <div className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg shadow">
               <p className="font-semibold mb-1">Agente</p>
