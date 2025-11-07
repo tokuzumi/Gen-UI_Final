@@ -58,11 +58,10 @@ export default function ChatInterface() {
             <div
               className={`max-w-xs lg:max-w-md px-4 py-3 rounded-xl shadow-md ${
                 message.type === "human"
-                  ? "bg-card text-foreground border border-border rounded-tr-none" // Alterado para bg-card e rounded-tr-none
-                  : "bg-card text-foreground border border-border rounded-tl-sm"
+                  ? "bg-card text-foreground border border-border rounded-tr-none"
+                  : "text-foreground rounded-tl-sm" // Removido bg-card e border
               }`}
             >
-              {/* Removido o cabeçalho 'Você' */}
               {message.type === "assistant" && (
                 <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
               )}
@@ -74,7 +73,7 @@ export default function ChatInterface() {
         {/* Indicador de digitação para o agente */}
         {isStreaming && (
             <div className="flex justify-start">
-                <div className="max-w-xs lg:max-w-md px-4 py-3 rounded-xl bg-card text-foreground border border-border rounded-tl-sm">
+                <div className="max-w-xs lg:max-w-md px-4 py-3 rounded-xl text-foreground rounded-tl-sm">
                     <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
                     <div className="flex items-center space-x-2">
                         <Loader2 className="h-4 w-4 animate-spin text-primary" />
