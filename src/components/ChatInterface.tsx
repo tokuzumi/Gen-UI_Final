@@ -5,6 +5,7 @@ import { useThread } from "@/providers/ThreadProvider";
 import { Send, Loader2, StopCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import ChatHeader from "./ChatHeader"; // Importando o novo cabeçalho
 
 export default function ChatInterface() {
   const {
@@ -18,12 +19,13 @@ export default function ChatInterface() {
   const isSending = thread.isLoading && inputMessage.trim() !== "";
   const isStreaming = thread.isLoading && inputMessage.trim() === "";
 
-  // A lógica de status do cabeçalho não é mais necessária, pois o cabeçalho foi removido.
-  // Mantendo apenas as variáveis de estado.
+  // Removida a lógica de status do cabeçalho, pois o cabeçalho foi removido anteriormente.
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      {/* O cabeçalho foi removido daqui */}
+      
+      {/* Novo Cabeçalho com Logo */}
+      <ChatHeader />
 
       {/* Área de Mensagens */}
       <div className="flex-1 p-4 overflow-y-auto space-y-6">
