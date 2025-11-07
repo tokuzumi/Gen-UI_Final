@@ -29,6 +29,7 @@ export default function ChatInterface() {
     if (!inputMessage.trim()) return;
 
     // Envia a mensagem do usuário para o agente.
+    // O useStream deve adicionar esta mensagem ao thread.messages
     thread.submit({
       messages: [{ type: "human", content: inputMessage }],
     });
@@ -50,9 +51,11 @@ export default function ChatInterface() {
             Diga olá para o seu agente LangGraph!
           </div>
         )}
-        {thread.messages.map((message) => (
+        {/* Usamos o índice como fallback key se o ID não estiver presente,
+            embora o LangGraph SDK deva fornecer IDs. */}
+        {thread.messages.map((message, index) => (
           <div
-            key={message.id}
+            key={message.id || index} // Usando index como fallback key
             className={`flex ${
               message.type === "human" ? "justify-end" : "justify-start"
             }`}
@@ -67,6 +70,7 @@ export default function ChatInterface() {
               <p className="font-semibold capitalize mb-1">
                 {message.type === "human" ? "Você" : "Agente"}
               </p>
+              {/* Garantindo que o conteúdo seja tratado como string */}
               <p>{message.content as string}</p>
             </div>
           </div>
