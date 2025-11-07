@@ -60,9 +60,13 @@ export default function ChatInterface() {
       </div>
 
       {/* Formulário de Input - Aplicando rounded-t-xl aqui */}
-      <form onSubmit={handleSubmit} className="p-4 bg-card border-t border-border shadow-2xl rounded-t-xl">
-        {/* Container centralizado e limitado em largura */}
-        <div className="flex items-center mx-auto w-full md:max-w-3xl">
+      {/* Aplicando max-w-3xl e mx-auto ao form para limitar o fundo em telas grandes */}
+      <form 
+        onSubmit={handleSubmit} 
+        className="p-4 bg-card border-t border-border shadow-2xl rounded-t-xl md:max-w-3xl md:mx-auto w-full"
+      >
+        {/* Container interno não precisa mais de mx-auto e max-w-3xl, mas vamos manter w-full */}
+        <div className="flex items-center w-full">
           
           {/* Input Wrapper: relative position for integrated button */}
           <div className="relative flex-1">
@@ -70,7 +74,7 @@ export default function ChatInterface() {
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              placeholder="Pergunte alguma coisa"
+              placeholder="Como posso te ajudar?"
               // Removendo rounded-full, usando arredondamento padrão e pr-12
               className="w-full h-12 p-3 bg-input border-border focus-visible:ring-0 focus-visible:ring-offset-0 pr-12" 
               disabled={thread.isLoading}
