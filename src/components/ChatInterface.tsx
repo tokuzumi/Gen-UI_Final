@@ -41,8 +41,8 @@ export default function ChatInterface() {
         {showWelcomeScreen ? (
           <ChatWelcomeScreen />
         ) : (
-          // Removendo mx-auto md:max-w-3xl daqui para que as mensagens ocupem a largura total do ChatInterface
-          <div className="space-y-6"> 
+          // Reaplicando mx-auto md:max-w-3xl para limitar a largura das mensagens
+          <div className="mx-auto md:max-w-3xl space-y-6"> 
             {displayedMessages.map((message, index) => (
               <div
                 key={message.id || index}
