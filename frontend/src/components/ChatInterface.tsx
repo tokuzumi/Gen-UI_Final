@@ -41,17 +41,17 @@ export default function ChatInterface() {
 
   // Calculamos o padding inferior necessário para que a última mensagem não fique escondida pelo formulário fixo.
   // Aumentando para 120px em desktop (md)
-  const paddingBottom = showHeader ? "pb-[100px] md:pb-[120px]" : "pb-4"; 
+  const paddingBottom = showHeader ? "pb-[100px] md:pb-[120px]" : "pb-4";
 
   // Se for a tela de boas-vindas, precisamos garantir que ela ocupe a altura restante para centralizar o conteúdo.
-  const welcomeScreenClasses = showWelcomeScreen 
-    ? "min-h-[calc(100vh-100px)] flex flex-col justify-center" 
+  const welcomeScreenClasses = showWelcomeScreen
+    ? "min-h-[calc(100vh-100px)] flex flex-col justify-center"
     : "";
 
   return (
     // O ChatInterface agora ocupa w-full
     <div className="bg-background min-h-screen">
-      
+
       {/* 1. Cabeçalho (Visível após a primeira mensagem) - Usa md:max-w-3xl (definido em ChatHeader.tsx) */}
       {showHeader && <ChatHeader />}
 
@@ -62,27 +62,25 @@ export default function ChatInterface() {
           <ChatWelcomeScreen />
         ) : (
           // Usando a largura expandida (md:max-w-5xl) APENAS para o conteúdo das mensagens
-          <div className={`mx-auto ${MESSAGE_CONTENT_WIDTH} space-y-6`}> 
+          <div className={`mx-auto ${MESSAGE_CONTENT_WIDTH} space-y-6`}>
             {displayedMessages.map((message, index) => {
               const isHuman = message.type === "human";
-              
+
               // Largura da bolha: max-w-xs em mobile. Em desktop, max-w-md para humano, max-w-xl para agente.
               const bubbleMaxWidth = isHuman ? "lg:max-w-md" : "lg:max-w-xl";
 
               return (
                 <div
                   key={message.id || index}
-                  className={`flex ${
-                    isHuman ? "justify-end" : "justify-start"
-                  }`}
+                  className={`flex ${isHuman ? "justify-end" : "justify-start"
+                    }`}
                 >
                   <div
                     // Aplicando a largura condicional
-                    className={`max-w-xs ${bubbleMaxWidth} px-4 py-3 rounded-xl shadow-md ${
-                      isHuman
-                        ? "bg-card text-foreground border border-border rounded-tr-none" 
-                        : "text-foreground rounded-tl-sm" 
-                    }`}
+                    className={`max-w-xs ${bubbleMaxWidth} px-4 py-3 rounded-xl shadow-md ${isHuman
+                        ? "bg-card text-foreground border border-border rounded-tr-none"
+                        : "text-foreground rounded-tl-sm"
+                      }`}
                   >
                     {!isHuman && (
                       <p className="font-semibold capitalize mb-1 text-sm">Agente</p>
@@ -92,15 +90,15 @@ export default function ChatInterface() {
                 </div>
               );
             })}
-            
+
             {/* Indicador de digitação para o agente - Ajustando margem */}
             {isStreaming && (
-                <div className="flex justify-start items-center space-x-2 ml-2 md:ml-0">
-                    <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                    <p className="text-sm text-muted-foreground">O Agente está digitando...</p>
-                </div>
+              <div className="flex justify-start items-center space-x-2 ml-2 md:ml-0">
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                <p className="text-sm text-muted-foreground">O Agente está digitando...</p>
+              </div>
             )}
-            
+
             {/* 4. Elemento de referência para rolagem */}
             <div ref={messagesEndRef} />
           </div>
@@ -109,13 +107,13 @@ export default function ChatInterface() {
 
       {/* 3. Formulário de Input (Fixo na parte inferior) */}
       <div className="fixed bottom-0 w-full flex justify-center z-20">
-        <form 
-          onSubmit={handleSubmit} 
+        <form
+          onSubmit={handleSubmit}
           // Aumentando a transparência para bg-card/60
-          className={`p-4 bg-card/60 backdrop-blur-md border-t border-border shadow-2xl rounded-t-xl ${WELCOME_SCREEN_WIDTH} w-full`}
+          className={`p-4 ${WELCOME_SCREEN_WIDTH} w-full`}
         >
           <div className="flex items-center w-full">
-            
+
             {/* Input Wrapper: relative position for integrated button */}
             <div className="relative flex-1">
               <Input
@@ -123,20 +121,20 @@ export default function ChatInterface() {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 placeholder="Como posso te ajudar?"
-                className="w-full h-12 p-3 bg-input border-border focus-visible:ring-0 focus-visible:ring-offset-0 pr-12" 
+                className="w-full h-12 p-3 bg-input border-border focus-visible:ring-0 focus-visible:ring-offset-0 pr-12"
                 disabled={thread.isLoading}
               />
-              
+
               {/* Botão de Envio integrado */}
               {!thread.isLoading && (
-                  <Button
-                      type="submit"
-                      size="icon"
-                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-10 w-10 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground"
-                      disabled={!inputMessage.trim()}
-                  >
-                      <Send className="h-5 w-5" />
-                  </Button>
+                <Button
+                  type="submit"
+                  size="icon"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-10 w-10 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+                  disabled={!inputMessage.trim()}
+                >
+                  <Send className="h-5 w-5" />
+                </Button>
               )}
             </div>
 
